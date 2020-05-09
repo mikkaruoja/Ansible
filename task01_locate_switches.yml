@@ -1,0 +1,5 @@
+---
+- hosts: core
+  gather_facts: false
+  roles:
+   - find_switches

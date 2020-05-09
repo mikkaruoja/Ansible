@@ -1,0 +1,10 @@
+ansible_network_os: ios
+
+mgmt_vlan: 20
+mgmt_gw: 192.168.20.1
+mgmt_netmask: 255.255.255.0
+
+snmp_community: test.community
+snmp_server: 192.168.0.20
+
+ntp_server: 192.168.0.21

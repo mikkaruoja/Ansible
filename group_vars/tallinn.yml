@@ -1,0 +1,11 @@
+vlans:
+  - name: test_vlan1
+    id: 11
+  - name: test_vlan2
+    id: 12
+  - name: tallinn
+    id: 15
+
+access_vlan:
+  name: tallinn
+  id: 15

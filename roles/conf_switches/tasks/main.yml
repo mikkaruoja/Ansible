@@ -1,0 +1,5 @@
+---
+- name: include IOS config
+  include: ios_config.yml
+  when:
+  -  ansible_network_os == "ios"

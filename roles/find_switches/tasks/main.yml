@@ -1,0 +1,28 @@
+---
+- name: Get IPs from arp
+  ios_command:
+    commands: show arp
+  register: output
+
+- name: copy to file on localhost
+  copy:
+    content: "{{ output.stdout }}"
+    dest: /home/mikk/arp.txt
+  delegate_to: localhost
+
+- name: Remove gateway and core-sw ip from list
+  shell: |
+    cat /home/mikk/arp.txt | grep -oE "192.168.10.[2][0-9][0-9]" > /home/mikk/addresses.txt
+  delegate_to: localhost  
+
+- name: Get ips as variable
+  set_fact:
+    ip_list: "{{ lookup('file', '/home/mikk/addresses.txt' ).splitlines() }}"
+  delegate_to: localhost
+
+- name: Copy addresses to task2_inv
+  template:
+    src: task02_inv.j2
+    dest: ./task02_inv.ini
+  delegate_to: localhost
+

@@ -1,0 +1,94 @@
+---
+- name: Set vtp mode
+  ios_config:
+    lines:
+      - vtp mode transparent
+
+- name: Configure all Vlans
+  ios_config:
+    lines:
+     - name {{ item.name }}
+    parents: vlan {{ item.id }}
+  loop: "{{ vlans }}"
+
+- name: Add all vlans to Uplink
+  ios_config:
+    lines:
+      - switchport trunk allowed vlan add {{ item.id }}
+    parents: interface range {{ interface_name }}{{ interface_name_nr.split(split_nr) [0] }}/{{ interface_name_nr.split(split_nr) [1] }}/{{ last_port }}
+  with_items: "{{ vlans }}"
+  when: nr_count == "3"
+
+- name: Add all vlans to Uplink
+  ios_config:
+    lines:
+      - switchport trunk allowed vlan add {{ item.id }}
+    parents: interface range {{ interface_name }}{{ interface_name_nr.split(split_nr) [0] }}/{{ last_port }}
+  with_items: "{{ vlans }}"
+  when: nr_count == "2"
+
+- name: Configure access interfaces
+  ios_config:
+    lines:
+      - Description {{ access_vlan.name }}
+      - switchport mode access
+      - switchport access vlan {{ access_vlan.id }}
+      - no cdp enable
+      - spanning-tree portfast
+    parents: interface range {{interface_name}}{{ interface_name_nr.split(split_nr) [0] }}/{{ interface_name_nr.split(split_nr) [1] }}/1 - {{ last_port-1}}
+  when: nr_count == "3"
+
+- name: Configure access interfaces
+  ios_config:
+    lines:
+      - Description {{ access_vlan.name }}
+      - switchport mode access
+      - switchport access vlan {{ access_vlan.id }}
+      - no cdp enable
+      - spanning-tree portfast
+    parents: interface range {{interface_name}}{{ interface_name_nr.split(split_nr) [0] }}/1 - {{ last_port-1}}
+  when: nr_count == "2"
+ 
+- name: Set SNMP community
+  ios_config:
+    lines:
+      - snmp-server community {{ snmp_community }} RO 1
+
+- name: Allow only snmp server
+  ios_config:
+    lines: access-list 1 permit {{ snmp_server }}
+
+- name: Disable HTTTP servers
+  ios_config:
+    lines:
+    - no ip http server
+    - no ip http secure-server
+
+- name: set NTP server
+  ios_ntp:
+    server: "{{ ntp_server}}"
+    state: present
+
+- name: Set con0 parameters
+  ios_config:
+    lines:
+      - logging synchronous
+      - stopbits 1
+    parents: line con 0
+
+- name: Set vty parameters
+  ios_config:
+    lines:
+      - exec-timeout 0 0
+      - logging synchronous
+      - login local
+      - transport input ssh
+    parents: line vty 0 15
+
+- name: Save configuration
+  ios_config:
+    save_when: modified
+
+- name: Print switch info
+  debug:
+    msg: Switch name={{ ansible_net_hostname }} team={{ team }} serial_nr={{ ansible_net_serialnum }} Uplink={{ last_port }}

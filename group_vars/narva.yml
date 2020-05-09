@@ -1,0 +1,11 @@
+vlans:
+  - name: test_vlan1
+    id: 31
+  - name: test_vlan2
+    id: 32
+  - name: narva
+    id: 35
+
+access_vlan:
+  name: narva
+  id: 35

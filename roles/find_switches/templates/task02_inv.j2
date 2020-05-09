@@ -1,0 +1,6 @@
+## Set switch hostname and static mgm ip address 
+## hostname example tallinn-sw01
+[switches]
+{% for ip in ip_list %}
+{{team}}- ansible_host={{ip}} mgmt_ip=
+{% endfor %}

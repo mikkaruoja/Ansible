@@ -1,0 +1,6 @@
+---
+- name: Populate inventory
+  template:
+    src: task03_inv.j2
+    dest: ./task03_inv.ini
+

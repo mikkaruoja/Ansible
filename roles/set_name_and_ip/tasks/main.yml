@@ -1,0 +1,40 @@
+---
+- name: Set hostname
+  ios_system:
+    hostname: "{{ inventory_hostname }}"
+
+- name: Configure MGMT Vlan
+  ios_config:
+    lines:
+     - name MGMT
+    parents: vlan {{ mgmt_vlan }}
+
+- name: Configure interface vlan IP
+  ios_config:
+    lines:
+     - ip address {{ mgmt_ip }} {{ mgmt_netmask }}
+    parents: interface Vlan {{ mgmt_vlan }}
+
+- name: Set uplink
+  ios_config:
+    lines:
+     - switchport mode trunk
+     - switchport trunk allowed vlan "{{ mgmt_vlan }}"
+    parents: interface {{interface_name}}{{ interface_name_nr.split(split_nr) [0] }}/{{ interface_name_nr.split(split_nr) [1] }}/{{last_port}}
+  when: nr_count == "3"
+
+- name: Set uplink
+  ios_config:
+    lines:
+     - switchport mode trunk
+     - switchport trunk allowed vlan "{{ mgmt_vlan }}"
+    parents: interface {{interface_name}}{{ interface_name_nr.split(split_nr) [0] }}/{{last_port}}
+  when: nr_count == "2"
+
+- name: Gather facts
+  ios_facts:
+
+- name: Create host vars file
+  template:
+    src: host_vars.yml.j2
+    dest: ./host_vars/{{ ansible_net_hostname }}.ini

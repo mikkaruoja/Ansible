@@ -1,0 +1,31 @@
+---
+- set_fact:
+    last_port:  48
+    cacheable: yes
+  when: ansible_net_interfaces | select('match', '^(Gig|Eth)') | list | count > 49
+
+- set_fact:
+    last_port:  24
+    cacheable: yes
+  when: ansible_net_interfaces | select('match', '^(Gig|Eth)') | list | count < 30
+
+- set_fact:
+    interface_name_split: 'Ethernet'
+    interface_list: "{{ ansible_net_interfaces | select('match', '^(Gig|Eth)') | list | last }}"
+    cacheable: yes
+
+- set_fact:
+    interface_name_nr: '{{ interface_list.split(interface_name_split)[1] }}'
+    cacheable: yes
+
+- set_fact:
+    interface_name: "{{ interface_list.split(interface_name_nr)[0] }}"
+    cacheable: yes
+  
+- set_fact:
+    split_nr: '/'
+    cacheable: yes
+
+- set_fact:
+    nr_count: "{{interface_name_nr.split(split_nr) | count }}"
+    cacheable: yes

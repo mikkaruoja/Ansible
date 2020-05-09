@@ -1,0 +1,19 @@
+---
+- hosts: switches
+  gather_facts: true
+  roles:
+    - get_interface_name
+    - set_name_and_ip
+
+- hosts: localhost
+  gather_facts: false
+  roles:
+   - populate_inv
+
+- hosts: switches
+  gather_facts: false
+  tasks:
+    - name: Configure interface vlan IP
+      ios_config:
+        lines:
+          - ip default-gateway {{ mgmt_gw }}
