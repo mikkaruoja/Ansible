@@ -1,4 +1,4 @@
-[{{team}}]
+[{{location}}]
 {% for host in groups['switches'] %}
 {% if hostvars[host]['ansible_net_interfaces'] | select('match', '^(Gig|Eth)') | list | count  > 49  %}
 {{hostvars[host]['ansible_net_hostname']}} ports=48 ansible_network_os={{hostvars[host]['ansible_net_system'] }} ansible_host={{hostvars[host]['mgmt_ip']}}
@@ -10,4 +10,4 @@
 {% endfor %}
 
 [switches:children]
-{{team}}
+{{location}}
