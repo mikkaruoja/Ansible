@@ -91,4 +91,4 @@
 
 - name: Print switch info
   debug:
-    msg: Switch name={{ ansible_net_hostname }} team={{ team }} serial_nr={{ ansible_net_serialnum }} Uplink={{ last_port }}
+    msg: Switch name={{ ansible_net_hostname }} location={{ location }} serial_nr={{ ansible_net_serialnum }} Uplink={{ last_port }}
