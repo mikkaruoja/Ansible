@@ -1,5 +1,5 @@
 ---
-- hosts: "{{team}}"
+- hosts: "{{location}}"
   gather_facts: true
   roles:
    - conf_switches
