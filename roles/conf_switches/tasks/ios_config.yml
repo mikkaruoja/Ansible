@@ -61,8 +61,8 @@
 - name: Disable HTTTP servers
   ios_config:
     lines:
-    - no ip http server
-    - no ip http secure-server
+      - no ip http server
+      - no ip http secure-server
 
 - name: set NTP server
   ios_ntp:
